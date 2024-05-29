@@ -27,6 +27,12 @@ struct MyShoppingCart: ShoppingCart {
         products.append(product)
     }
     
+    mutating func addProducts(_ products: [Item]) {
+        products.forEach {
+            addProduct($0)
+        }
+    }
+    
     mutating func removeProduct(at index: Int) {
         guard index >= 0 && index < products.count else { return }
         products.remove(at: index)
@@ -42,7 +48,12 @@ struct MyShoppingCart: ShoppingCart {
     
     mutating func applyDiscount(discountPercentage: Double) {
         let discountMultiplier = 1 - (discountPercentage / 100)
-        products = products.map { Item(name: $0.name, price: $0.price * discountMultiplier) }
+        products = products.map {
+            .init(
+                name: $0.name,
+                price: $0.price * discountMultiplier
+            )
+        }
     }
     
     mutating func removeAllProducts() {
@@ -50,11 +61,12 @@ struct MyShoppingCart: ShoppingCart {
     }
 }
 
-// Example usage:
 var cart = MyShoppingCart()
-cart.addProduct(Item(name: "Laptop", price: 1200))
-cart.addProduct(Item(name: "Phone", price: 800))
-cart.addProduct(Item(name: "Headphones", price: 150))
+cart.addProducts([
+    .init(name: "Laptop", price: 1200),
+    .init(name: "Phone", price: 800),
+    .init(name: "Headphones", price: 150)
+])
 
 print("Total price before discount: \(cart.totalPrice())")
 
